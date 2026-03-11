@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '../ui';
 
 const Navbar = () => {
@@ -13,13 +14,13 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-card/90 backdrop-blur-md border-b border-dark-border">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-800/90 backdrop-blur-md border-b border-slate-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <a href="#home" className="text-2xl font-bold text-primary-400">
+            <Link to="/" className="text-2xl font-bold text-primary-400">
               NB
-            </a>
+            </Link>
           </div>
 
           <div className="hidden md:block">
@@ -36,7 +37,12 @@ const Navbar = () => {
             </div>
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:block flex items-center gap-3">
+            <Link to="/login">
+              <Button variant="ghost" size="sm">
+                Login
+              </Button>
+            </Link>
             <Button variant="outline" size="sm">
               Download CV
             </Button>
@@ -45,7 +51,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-primary-400 hover:bg-dark-border focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-primary-400 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
             >
               <span className="sr-only">Open main menu</span>
               {isMenuOpen ? (
@@ -64,7 +70,7 @@ const Navbar = () => {
 
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-dark-card border-t border-dark-border">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-slate-800 border-t border-slate-700">
             {navLinks.map((link) => (
               <a
                 key={link.label}
@@ -75,7 +81,12 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
-            <div className="pt-2 px-3">
+            <div className="pt-2 px-3 space-y-2">
+              <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="ghost" className="w-full">
+                  Login
+                </Button>
+              </Link>
               <Button variant="outline" className="w-full">
                 Download CV
               </Button>
