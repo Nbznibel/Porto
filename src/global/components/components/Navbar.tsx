@@ -13,11 +13,11 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-card/90 backdrop-blur-md border-b border-dark-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <a href="#home" className="text-2xl font-bold text-primary-600">
+            <a href="#home" className="text-2xl font-bold text-primary-400">
               NB
             </a>
           </div>
@@ -28,7 +28,7 @@ const Navbar = () => {
                 <a
                   key={link.label}
                   href={link.href}
-                  className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                  className="text-gray-300 hover:text-primary-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
                 >
                   {link.label}
                 </a>
@@ -45,7 +45,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-primary-400 hover:bg-dark-border focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
             >
               <span className="sr-only">Open main menu</span>
               {isMenuOpen ? (
@@ -64,12 +64,12 @@ const Navbar = () => {
 
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-dark-card border-t border-dark-border">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="text-gray-700 hover:text-primary-600 block px-3 py-2 rounded-md text-base font-medium"
+                className="text-gray-300 hover:text-primary-400 block px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}
