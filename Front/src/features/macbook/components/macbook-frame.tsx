@@ -48,6 +48,7 @@ export const MacbookFrame = ({
           content rendered behind the inner screen area. */}
       <motion.div
         style={{
+          scale: 1.25,
           rotateX: screenRotateX,
           transformPerspective: 800,
           transformOrigin: "top",
