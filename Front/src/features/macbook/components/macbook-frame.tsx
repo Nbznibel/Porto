@@ -6,6 +6,7 @@
 // bezel so live React children can be rendered underneath it.
 
 import type { ReactNode } from "react";
+import { motion } from "motion/react";
 import {
   IconBrightnessDown,
   IconBrightnessUp,
@@ -29,31 +30,39 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "../../../lib/utils";
 
-export const MacbookFrame = ({ className }: { className?: string }) => (
+export const MacbookFrame = ({
+  className,
+  screenRotateX,
+}: {
+  className?: string;
+  screenRotateX: number;
+}) => (
   <div className={cn("relative [perspective:1200px]", className)} aria-hidden="true">
-    {/* Lid */}
-    <div className="relative [perspective:1200px]">
-      <div
+    {/* Lid spacer keeps the original frame height; the single tilted bezel below
+        provides the X-axis inclination without a second visible border. No
+        parent perspective here: the screen keeps the same width as the keyboard
+        base instead of tapering away from it. */}
+    <div className="relative">
+      <div className="relative h-[12rem] w-[32rem]" />
+      {/* Transparent front bezel. It keeps the X-axis tilt and reveals the live
+          content rendered behind the inner screen area. */}
+      <motion.div
         style={{
-          transform: "perspective(1200px) rotateX(-25deg) translateZ(0px)",
+          rotateX: screenRotateX,
+          transformPerspective: 900,
           transformOrigin: "bottom",
           transformStyle: "preserve-3d",
         }}
-        className="relative h-[12rem] w-[32rem] rounded-2xl bg-[#010101] p-2"
+        className="absolute inset-0 h-[12.8rem] w-[32rem] rounded-2xl border-8 border-[#010101] shadow-[0_0_0_1px_#272729_inset]"
       >
-        <div
-          style={{ boxShadow: "0px 2px 0px 2px #171717 inset" }}
-          className="absolute inset-0 flex items-center justify-center rounded-lg bg-[#010101]"
-        >
-          <Monogram />
+        <div data-macbook-screen className="relative h-full w-full rounded-lg">
+          <div className="absolute left-1/2 top-0 h-2 w-16 -translate-x-1/2 rounded-b-xl bg-[#050505]" />
         </div>
-      </div>
-      {/* Transparent screen bezel — the live content sits behind this layer. */}
-      <div className="absolute inset-0 h-96 w-[32rem] rounded-2xl border-8 border-[#010101] shadow-[0_0_0_1px_#272729_inset]" />
+      </motion.div>
     </div>
 
     {/* Base */}
-    <div className="relative h-[22rem] w-[32rem] overflow-hidden rounded-2xl bg-[#1f1f21]">
+    <div className="relative mt-[0.8rem] h-[22rem] w-[32rem] overflow-hidden rounded-2xl bg-[#1f1f21]">
       <div className="relative h-10 w-full">
         <div className="absolute inset-x-0 mx-auto h-4 w-[80%] bg-[#050505]" />
       </div>
@@ -75,10 +84,6 @@ export const MacbookFrame = ({ className }: { className?: string }) => (
       <div className="absolute inset-x-0 bottom-0 mx-auto h-2 w-20 rounded-tl-3xl rounded-tr-3xl bg-gradient-to-t from-[#272729] to-[#050505]" />
     </div>
   </div>
-);
-
-const Monogram = () => (
-  <span className="font-mono text-[10px] tracking-[0.3em] text-neutral-500">NBE</span>
 );
 
 export const Keypad = () => (
