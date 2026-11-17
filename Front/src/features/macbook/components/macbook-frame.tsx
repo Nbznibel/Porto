@@ -49,7 +49,6 @@ export const MacbookFrame = ({
       <motion.div
         style={{
           rotateX: screenRotateX,
-          transformPerspective: 800,
           transformOrigin: "top",
           transformStyle: "preserve-3d",
         }}
@@ -62,7 +61,7 @@ export const MacbookFrame = ({
     </div>
 
     {/* Base */}
-    <div className="relative h-[22rem] w-[32rem] overflow-hidden rounded-2xl bg-[#1f1f21]">
+    <div className="relative mt-[0.8rem] h-[22rem] w-[32rem] overflow-hidden rounded-2xl bg-[#1f1f21]">
       <div className="relative h-10 w-full">
         <div className="absolute inset-x-0 mx-auto h-4 w-[80%] bg-[#050505]" />
       </div>
