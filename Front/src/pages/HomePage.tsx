@@ -7,8 +7,8 @@ const HomePage = () => (
   <div className="min-h-screen bg-paper text-ink">
     <PortfolioNav />
     <main>
-      <Hero />
       <MacbookExperience>
+        <Hero />
         <PortfolioContent />
       </MacbookExperience>
     </main>
