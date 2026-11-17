@@ -6,6 +6,7 @@
 // bezel so live React children can be rendered underneath it.
 
 import type { ReactNode } from "react";
+import { motion, type MotionValue } from "motion/react";
 import {
   IconBrightnessDown,
   IconBrightnessUp,
@@ -29,9 +30,15 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "../../../lib/utils";
 
-export const MacbookFrame = ({ className }: { className?: string }) => (
+export const MacbookFrame = ({
+  className,
+  screenRotateX,
+}: {
+  className?: string;
+  screenRotateX: MotionValue<number>;
+}) => (
   <div className={cn("relative [perspective:1200px]", className)} aria-hidden="true">
-    {/* Lid */}
+    {/* Lid — the inclined black back panel from the original Aceternity design. */}
     <div className="relative [perspective:1200px]">
       <div
         style={{
@@ -39,12 +46,29 @@ export const MacbookFrame = ({ className }: { className?: string }) => (
           transformOrigin: "bottom",
           transformStyle: "preserve-3d",
         }}
-        className="relative h-[12rem] w-[32rem] rounded-2xl"
-      />
-      {/* Transparent screen bezel — the live content sits behind this layer. */}
-      <div className="absolute inset-0 h-96 w-[32rem] rounded-2xl border-8 border-[#010101] shadow-[0_0_0_1px_#272729_inset]">
-        <div className="absolute left-1/2 top-0 h-2 w-16 -translate-x-1/2 rounded-b-xl bg-[#050505]" />
+        className="relative h-[12rem] w-[32rem] rounded-2xl bg-[#010101] p-2"
+      >
+        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-[#010101]">
+          <span className="font-mono text-[10px] tracking-[0.3em] text-neutral-500">
+            NBE
+          </span>
+        </div>
       </div>
+      {/* Transparent front bezel. It keeps the X-axis tilt and reveals the live
+          content rendered behind the inner screen area. */}
+      <motion.div
+        style={{
+          rotateX: screenRotateX,
+          transformPerspective: 800,
+          transformOrigin: "top",
+          transformStyle: "preserve-3d",
+        }}
+        className="absolute inset-0 h-96 w-[32rem] rounded-2xl border-8 border-[#010101] shadow-[0_0_0_1px_#272729_inset]"
+      >
+        <div data-macbook-screen className="relative h-full w-full rounded-lg">
+          <div className="absolute left-1/2 top-0 h-2 w-16 -translate-x-1/2 rounded-b-xl bg-[#050505]" />
+        </div>
+      </motion.div>
     </div>
 
     {/* Base */}

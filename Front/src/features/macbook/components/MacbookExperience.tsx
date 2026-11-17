@@ -20,15 +20,24 @@ interface MacbookExperienceProps {
   children: ReactNode;
 }
 
+interface ScreenRect {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
 const TAKEOVER = 1100;
 const BASE_FRAME_H = 544;
-const BASE_BEZEL = 8;
 const BASE_SCREEN_W = 496;
 const BASE_SCREEN_H = 368;
+const BASE_BEZEL = 8;
 const MAX_FRAME_SCALE = 0.78;
 const HEADER_CLEARANCE = 80;
 const FRAME_GAP = 16;
 const BOTTOM_CLEARANCE = 24;
+const SCREEN_ROTATE_X = -26;
+const CONTENT_SCREEN_LIFT = 0.5;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -49,11 +58,21 @@ const frameTopFor = (viewportHeight: number, scale: number) =>
     (viewportHeight - BASE_FRAME_H * scale) / 2 + FRAME_GAP,
   );
 
+const fallbackScreen = (viewportWidth: number, viewportHeight: number): ScreenRect => {
+  const scale = frameScaleFor(viewportHeight);
+  return {
+    top: frameTopFor(viewportHeight, scale) + BASE_BEZEL * scale,
+    left: (viewportWidth - BASE_SCREEN_W * scale) / 2,
+    width: BASE_SCREEN_W * scale,
+    height: BASE_SCREEN_H * scale,
+  };
+};
+
 // Desktop-only scroll takeover. The MacBook replaces the hero: at rest it shows
-// the portfolio (starting at the hero banner) on its screen. Scrolling widens
-// that screen into a full-viewport perspective; once full-screen the content is
-// released from all transforms and scrolls normally. Mobile and reduced-motion
-// users receive the same children directly, with no frame or mask.
+// the portfolio (starting at the hero banner) on its X-inclined screen. Scrolling
+// flattens and widens that screen to the viewport, then releases the content so
+// it scrolls normally. Mobile and reduced-motion users receive the children
+// directly, with no frame or mask.
 export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const { width, height } = useMacbookViewport();
@@ -61,10 +80,17 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
   const enabled = width >= 1024 && !prefersReducedMotion;
 
   const { scrollY } = useScroll();
-  const geometryRef = useRef({ width, height, sectionTop: 0 });
+  const geometryRef = useRef<{
+    width: number;
+    height: number;
+    sectionTop: number;
+    screen: ScreenRect | null;
+  }>({ width, height, sectionTop: 0, screen: null });
 
   const contentY = useMotionValue(0);
   const contentScale = useMotionValue(1);
+  const contentRotateX = useMotionValue(SCREEN_ROTATE_X);
+  const screenRotateX = useMotionValue(SCREEN_ROTATE_X);
   const frameOpacity = useMotionValue(1);
   const windowTop = useMotionValue(0);
   const windowLeft = useMotionValue(0);
@@ -78,34 +104,40 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
         width: viewportWidth,
         height: viewportHeight,
         sectionTop,
+        screen: measuredScreen,
       } = geometryRef.current;
+      const screen =
+        measuredScreen ?? fallbackScreen(viewportWidth, viewportHeight);
       const progress = clamp((scroll - sectionTop) / TAKEOVER, 0, 1);
       const eased = easeOut(progress);
-      const scaleFactor = frameScaleFor(viewportHeight);
-      const screenW = BASE_SCREEN_W * scaleFactor;
-      const screenH = BASE_SCREEN_H * scaleFactor;
-      const screenTop =
-        frameTopFor(viewportHeight, scaleFactor) + BASE_BEZEL * scaleFactor;
-      const initialScale = Math.min(1, screenW / Math.max(1, viewportWidth));
+      const initialScale = Math.min(1, screen.width / Math.max(1, viewportWidth));
       const scale = initialScale + (1 - initialScale) * eased;
-      const nextWindowWidth = viewportWidth * scale;
+      const rotate = SCREEN_ROTATE_X * (1 - eased);
 
+      // The X tilt pushes the hero text toward the bottom of the projected
+      // screen, so lift it into the visible area while the MacBook is closed.
+      const liftedScreenTop =
+        (screen.top - screen.height * CONTENT_SCREEN_LIFT) * (1 - eased);
       contentY.set(
         scroll >= sectionTop + TAKEOVER
           ? 0
-          : screenTop * (1 - progress) - (sectionTop + TAKEOVER - scroll),
+          : liftedScreenTop - (sectionTop + TAKEOVER - scroll),
       );
       contentScale.set(scale);
+      contentRotateX.set(rotate);
+      screenRotateX.set(rotate);
       frameOpacity.set(1 - clamp((progress - 0.25) / 0.3, 0, 1));
-      windowTop.set(screenTop * (1 - progress));
-      windowLeft.set((viewportWidth - nextWindowWidth) / 2);
-      windowWidth.set(nextWindowWidth);
-      windowHeight.set(screenH + (viewportHeight - screenH) * eased);
+      windowTop.set(screen.top * (1 - eased));
+      windowLeft.set(screen.left * (1 - eased));
+      windowWidth.set(screen.width + (viewportWidth - screen.width) * eased);
+      windowHeight.set(screen.height + (viewportHeight - screen.height) * eased);
       hintOpacity.set(1 - clamp(progress / 0.15, 0, 1));
     },
     [
       contentY,
       contentScale,
+      contentRotateX,
+      screenRotateX,
       frameOpacity,
       windowTop,
       windowLeft,
@@ -122,12 +154,24 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
 
   useLayoutEffect(() => {
     const measure = () => {
+      const screenElement = sectionRef.current?.querySelector<HTMLElement>(
+        "[data-macbook-screen]",
+      );
+      const rect = screenElement?.getBoundingClientRect();
       geometryRef.current = {
         width,
         height,
         sectionTop: sectionRef.current
           ? sectionRef.current.getBoundingClientRect().top + window.scrollY
           : 0,
+        screen: rect
+          ? {
+              top: rect.top,
+              left: rect.left,
+              width: rect.width,
+              height: rect.height,
+            }
+          : null,
       };
       sync(window.scrollY);
     };
@@ -168,7 +212,7 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
             transformOrigin: "top center",
           }}
         >
-          <MacbookFrame />
+          <MacbookFrame screenRotateX={screenRotateX} />
         </div>
         <motion.p
           style={{ opacity: hintOpacity }}
@@ -184,6 +228,8 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
         style={{
           y: contentY,
           scale: contentScale,
+          rotateX: contentRotateX,
+          transformPerspective: 800,
           transformOrigin: "top center",
         }}
         className="relative z-10 w-full bg-paper will-change-transform"
