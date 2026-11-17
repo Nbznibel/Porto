@@ -37,7 +37,7 @@ const HEADER_CLEARANCE = 80;
 const FRAME_GAP = 16;
 const BOTTOM_CLEARANCE = 24;
 const SCREEN_ROTATE_X = -26;
-const CONTENT_SCREEN_LIFT = 0.5;
+const CONTENT_SCREEN_LIFT = 0.1235;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
@@ -229,7 +229,7 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
           y: contentY,
           scale: contentScale,
           rotateX: contentRotateX,
-          transformPerspective: 800,
+          transformPerspective: 1400,
           transformOrigin: "top center",
         }}
         className="relative z-10 w-full bg-paper will-change-transform"
