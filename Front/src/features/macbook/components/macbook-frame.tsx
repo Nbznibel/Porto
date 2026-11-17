@@ -49,6 +49,7 @@ export const MacbookFrame = ({
       <motion.div
         style={{
           rotateX: screenRotateX,
+          transformPerspective: 800,
           transformOrigin: "top",
           transformStyle: "preserve-3d",
         }}
