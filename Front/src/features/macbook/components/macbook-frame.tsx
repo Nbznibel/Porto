@@ -39,17 +39,12 @@ export const MacbookFrame = ({ className }: { className?: string }) => (
           transformOrigin: "bottom",
           transformStyle: "preserve-3d",
         }}
-        className="relative h-[12rem] w-[32rem] rounded-2xl bg-[#010101] p-2"
-      >
-        <div
-          style={{ boxShadow: "0px 2px 0px 2px #171717 inset" }}
-          className="absolute inset-0 flex items-center justify-center rounded-lg bg-[#010101]"
-        >
-          <Monogram />
-        </div>
-      </div>
+        className="relative h-[12rem] w-[32rem] rounded-2xl"
+      />
       {/* Transparent screen bezel — the live content sits behind this layer. */}
-      <div className="absolute inset-0 h-96 w-[32rem] rounded-2xl border-8 border-[#010101] shadow-[0_0_0_1px_#272729_inset]" />
+      <div className="absolute inset-0 h-96 w-[32rem] rounded-2xl border-8 border-[#010101] shadow-[0_0_0_1px_#272729_inset]">
+        <div className="absolute left-1/2 top-0 h-2 w-16 -translate-x-1/2 rounded-b-xl bg-[#050505]" />
+      </div>
     </div>
 
     {/* Base */}
@@ -75,10 +70,6 @@ export const MacbookFrame = ({ className }: { className?: string }) => (
       <div className="absolute inset-x-0 bottom-0 mx-auto h-2 w-20 rounded-tl-3xl rounded-tr-3xl bg-gradient-to-t from-[#272729] to-[#050505]" />
     </div>
   </div>
-);
-
-const Monogram = () => (
-  <span className="font-mono text-[10px] tracking-[0.3em] text-neutral-500">NBE</span>
 );
 
 export const Keypad = () => (

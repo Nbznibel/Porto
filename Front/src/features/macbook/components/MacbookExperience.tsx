@@ -21,14 +21,33 @@ interface MacbookExperienceProps {
 }
 
 const TAKEOVER = 1100;
-const SCREEN_W = 496;
-const SCREEN_H = 368;
-const FRAME_H = 544;
-const BEZEL = 8;
+const BASE_FRAME_H = 544;
+const BASE_BEZEL = 8;
+const BASE_SCREEN_W = 496;
+const BASE_SCREEN_H = 368;
+const MAX_FRAME_SCALE = 0.78;
+const HEADER_CLEARANCE = 80;
+const FRAME_GAP = 16;
+const BOTTOM_CLEARANCE = 24;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 const easeOut = (progress: number) => 1 - (1 - progress) * (1 - progress);
+
+const frameScaleFor = (viewportHeight: number) =>
+  Math.min(
+    MAX_FRAME_SCALE,
+    Math.max(
+      0.55,
+      (viewportHeight - HEADER_CLEARANCE - BOTTOM_CLEARANCE) / BASE_FRAME_H,
+    ),
+  );
+
+const frameTopFor = (viewportHeight: number, scale: number) =>
+  Math.max(
+    HEADER_CLEARANCE,
+    (viewportHeight - BASE_FRAME_H * scale) / 2 + FRAME_GAP,
+  );
 
 // Desktop-only scroll takeover. The MacBook replaces the hero: at rest it shows
 // the portfolio (starting at the hero banner) on its screen. Scrolling widens
@@ -46,12 +65,11 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
 
   const contentY = useMotionValue(0);
   const contentScale = useMotionValue(1);
-  const contentRotateX = useMotionValue(0);
   const frameOpacity = useMotionValue(1);
   const windowTop = useMotionValue(0);
   const windowLeft = useMotionValue(0);
-  const windowWidth = useMotionValue(SCREEN_W);
-  const windowHeight = useMotionValue(SCREEN_H);
+  const windowWidth = useMotionValue(BASE_SCREEN_W);
+  const windowHeight = useMotionValue(BASE_SCREEN_H);
   const hintOpacity = useMotionValue(1);
 
   const sync = useCallback(
@@ -61,14 +79,14 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
         height: viewportHeight,
         sectionTop,
       } = geometryRef.current;
-      const progress = clamp(
-        (scroll - sectionTop) / TAKEOVER,
-        0,
-        1,
-      );
+      const progress = clamp((scroll - sectionTop) / TAKEOVER, 0, 1);
       const eased = easeOut(progress);
-      const screenTop = Math.max(8, (viewportHeight - FRAME_H) / 2) + BEZEL;
-      const initialScale = Math.min(1, SCREEN_W / Math.max(1, viewportWidth));
+      const scaleFactor = frameScaleFor(viewportHeight);
+      const screenW = BASE_SCREEN_W * scaleFactor;
+      const screenH = BASE_SCREEN_H * scaleFactor;
+      const screenTop =
+        frameTopFor(viewportHeight, scaleFactor) + BASE_BEZEL * scaleFactor;
+      const initialScale = Math.min(1, screenW / Math.max(1, viewportWidth));
       const scale = initialScale + (1 - initialScale) * eased;
       const nextWindowWidth = viewportWidth * scale;
 
@@ -78,18 +96,16 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
           : screenTop * (1 - progress) - (sectionTop + TAKEOVER - scroll),
       );
       contentScale.set(scale);
-      contentRotateX.set(-26 * (1 - clamp(progress / 0.55, 0, 1)));
       frameOpacity.set(1 - clamp((progress - 0.25) / 0.3, 0, 1));
       windowTop.set(screenTop * (1 - progress));
       windowLeft.set((viewportWidth - nextWindowWidth) / 2);
       windowWidth.set(nextWindowWidth);
-      windowHeight.set(SCREEN_H + (viewportHeight - SCREEN_H) * eased);
+      windowHeight.set(screenH + (viewportHeight - screenH) * eased);
       hintOpacity.set(1 - clamp(progress / 0.15, 0, 1));
     },
     [
       contentY,
       contentScale,
-      contentRotateX,
       frameOpacity,
       windowTop,
       windowLeft,
@@ -125,6 +141,9 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
     return <>{children}</>;
   }
 
+  const frameScale = frameScaleFor(height);
+  const frameTop = frameTopFor(height, frameScale);
+
   return (
     <section ref={sectionRef} aria-label="Portfolio experience" className="relative">
       <motion.div
@@ -141,12 +160,19 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
             boxShadow: "0 0 0 100vmax var(--color-paper)",
           }}
         />
-        <div className="absolute inset-0 flex items-center justify-center [perspective:1400px]">
+        <div
+          className="absolute left-1/2"
+          style={{
+            top: frameTop,
+            transform: `translateX(-50%) scale(${frameScale})`,
+            transformOrigin: "top center",
+          }}
+        >
           <MacbookFrame />
         </div>
         <motion.p
           style={{ opacity: hintOpacity }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted"
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted"
         >
           Scroll to open
         </motion.p>
@@ -158,8 +184,6 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
         style={{
           y: contentY,
           scale: contentScale,
-          rotateX: contentRotateX,
-          transformPerspective: 1400,
           transformOrigin: "top center",
         }}
         className="relative z-10 w-full bg-paper will-change-transform"
