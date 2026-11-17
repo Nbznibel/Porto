@@ -49,11 +49,11 @@ export const MacbookFrame = ({
       <motion.div
         style={{
           rotateX: screenRotateX,
-          transformPerspective: 800,
-          transformOrigin: "top",
+          transformPerspective: 900,
+          transformOrigin: "bottom",
           transformStyle: "preserve-3d",
         }}
-        className="absolute inset-0 h-96 w-[32rem] rounded-2xl border-8 border-[#010101] shadow-[0_0_0_1px_#272729_inset]"
+        className="absolute inset-0 h-[12.8rem] w-[32rem] rounded-2xl border-8 border-[#010101] shadow-[0_0_0_1px_#272729_inset]"
       >
         <div data-macbook-screen className="relative h-full w-full rounded-lg">
           <div className="absolute left-1/2 top-0 h-2 w-16 -translate-x-1/2 rounded-b-xl bg-[#050505]" />
