@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-paper: #f6f3ed;
+    --color-surface: #ece8df;
+    --color-ink: #1b1a18;
+    --color-muted: #6b665e;
+    --color-line: #dcd7cc;
+    --color-accent: #5d6b4f;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  ::selection {
+    @apply bg-accent text-paper;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-4 outline-accent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-[0.24em] text-muted;
+  }
+
+  .display-title {
+    @apply text-5xl font-medium leading-[1.02] tracking-[-0.045em] sm:text-7xl lg:text-[5.5rem];
+  }
+
+  .section-title {
+    @apply text-3xl font-medium leading-tight tracking-[-0.03em] sm:text-4xl;
+  }
+
+  .hairline {
+    @apply border-t border-line;
+  }
+}
