@@ -38,22 +38,10 @@ export const MacbookFrame = ({
   screenRotateX: MotionValue<number>;
 }) => (
   <div className={cn("relative [perspective:1200px]", className)} aria-hidden="true">
-    {/* Lid — the inclined black back panel from the original Aceternity design. */}
+    {/* Lid spacer keeps the original frame height; the single tilted bezel below
+        provides the X-axis inclination without a second visible border. */}
     <div className="relative [perspective:1200px]">
-      <div
-        style={{
-          transform: "perspective(1200px) rotateX(-25deg) translateZ(0px)",
-          transformOrigin: "bottom",
-          transformStyle: "preserve-3d",
-        }}
-        className="relative h-[12rem] w-[32rem] rounded-2xl bg-[#010101] p-2"
-      >
-        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-[#010101]">
-          <span className="font-mono text-[10px] tracking-[0.3em] text-neutral-500">
-            NBE
-          </span>
-        </div>
-      </div>
+      <div className="relative h-[12rem] w-[32rem]" />
       {/* Transparent front bezel. It keeps the X-axis tilt and reveals the live
           content rendered behind the inner screen area. */}
       <motion.div

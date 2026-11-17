@@ -6,7 +6,12 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores([
+    'dist',
+    // Unreferenced Aceternity demo files kept for reference, excluded from checks.
+    'src/components/ui/macbook-scroll.tsx',
+    'src/features/macbook/components/index.tsx',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
