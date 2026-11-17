@@ -69,9 +69,10 @@ const fallbackScreen = (viewportWidth: number, viewportHeight: number): ScreenRe
 };
 
 // Desktop-only scroll takeover. The MacBook replaces the hero: at rest it shows
-// the portfolio (starting at the hero banner) on its X-inclined screen. Scrolling
-// flattens and widens that screen to the viewport, then releases the content so
-// it scrolls normally. Mobile and reduced-motion users receive the children
+// the portfolio (starting at the hero banner) on its X-inclined screen. The lid
+// stays fixed; scrolling fades the frame while the live content flattens and
+// widens to the viewport, then releases it so scrolling continues normally.
+// Mobile and reduced-motion users receive the children
 // directly, with no frame or mask.
 export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -90,7 +91,6 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
   const contentY = useMotionValue(0);
   const contentScale = useMotionValue(1);
   const contentRotateX = useMotionValue(SCREEN_ROTATE_X);
-  const screenRotateX = useMotionValue(SCREEN_ROTATE_X);
   const frameOpacity = useMotionValue(1);
   const windowTop = useMotionValue(0);
   const windowLeft = useMotionValue(0);
@@ -125,7 +125,6 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
       );
       contentScale.set(scale);
       contentRotateX.set(rotate);
-      screenRotateX.set(rotate);
       frameOpacity.set(1 - clamp((progress - 0.25) / 0.3, 0, 1));
       windowTop.set(screen.top * (1 - eased));
       windowLeft.set(screen.left * (1 - eased));
@@ -137,7 +136,6 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
       contentY,
       contentScale,
       contentRotateX,
-      screenRotateX,
       frameOpacity,
       windowTop,
       windowLeft,
@@ -212,7 +210,7 @@ export const MacbookExperience = ({ children }: MacbookExperienceProps) => {
             transformOrigin: "top center",
           }}
         >
-          <MacbookFrame screenRotateX={screenRotateX} />
+          <MacbookFrame screenRotateX={SCREEN_ROTATE_X} />
         </div>
         <motion.p
           style={{ opacity: hintOpacity }}

@@ -6,7 +6,7 @@
 // bezel so live React children can be rendered underneath it.
 
 import type { ReactNode } from "react";
-import { motion, type MotionValue } from "motion/react";
+import { motion } from "motion/react";
 import {
   IconBrightnessDown,
   IconBrightnessUp,
@@ -35,7 +35,7 @@ export const MacbookFrame = ({
   screenRotateX,
 }: {
   className?: string;
-  screenRotateX: MotionValue<number>;
+  screenRotateX: number;
 }) => (
   <div className={cn("relative [perspective:1200px]", className)} aria-hidden="true">
     {/* Lid spacer keeps the original frame height; the single tilted bezel below
