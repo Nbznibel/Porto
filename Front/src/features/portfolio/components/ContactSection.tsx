@@ -29,7 +29,7 @@ export const ContactSection = () => {
           >
             <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">LinkedIn</p>
             <p className="mt-3 break-all text-base text-ink group-hover:text-accent">
-              {profile.linkedin.replace("https://", "")}
+              {profile.name}
             </p>
           </a>
         </div>

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Container, buttonStyles } from "../../../global/components/ui";
 import { portfolioData } from "../consts/profile.data";
 
@@ -30,9 +29,6 @@ export const PortfolioNav = () => (
       </nav>
 
       <div className="flex items-center gap-3">
-        <Link to="/dashboard" className={buttonStyles({ variant: "ghost", size: "sm" })}>
-          Dashboard
-        </Link>
         <a href="#contact" className={buttonStyles({ variant: "outline", size: "sm" })}>
           Contact
         </a>
