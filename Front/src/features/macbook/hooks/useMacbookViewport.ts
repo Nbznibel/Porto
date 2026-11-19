@@ -6,7 +6,7 @@ export const useMacbookViewport = () => {
     height: typeof window === "undefined" ? 900 : window.innerHeight,
   }));
 
-  useEffect(() => {
+  useEffect(() => { 
     const handleResize = () => {
       setViewport({ width: window.innerWidth, height: window.innerHeight });
     };
