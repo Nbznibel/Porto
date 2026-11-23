@@ -22,7 +22,12 @@ const buildProfileJson = () => {
         "Microservices & APIs",
         "AI / RAG integration",
       ],
-      technologies: [skills[0].items[0], skills[1].items[0], skills[0].items[5], skills[0].items[3]],
+      technologies: [
+        skills[0].items[0],
+        skills[1].items[0],
+        skills[0].items[5],
+        skills[0].items[3],
+      ],
     },
     null,
     2,
@@ -35,7 +40,7 @@ export const Hero = () => {
 
   return (
     <section id="top" className="relative border-b border-line">
-      <Container className="grid gap-14 py-20 sm:py-28 lg:grid-cols-12 lg:items-center lg:gap-10 lg:py-32">
+      <Container className="grid gap-14 py-12 lg:grid-cols-12 lg:items-center lg:gap-10">
         <div className="lg:col-span-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-accent" />
@@ -54,10 +59,16 @@ export const Hero = () => {
 
           <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 font-mono text-xs text-muted">
             <span>{profile.location}</span>
-            <a href={`mailto:${profile.email}`} className="lower-case hover:text-accent">
+            <a
+              href={`mailto:${profile.email}`}
+              className="lower-case hover:text-accent"
+            >
               {profile.email}
             </a>
-            <a href={`tel:${profile.phone.replace(/\s/g, "")}`} className="hover:text-accent">
+            <a
+              href={`tel:${profile.phone.replace(/\s/g, "")}`}
+              className="hover:text-accent"
+            >
               {profile.phone}
             </a>
           </div>
@@ -66,7 +77,10 @@ export const Hero = () => {
             <a href="#projects" className={buttonStyles({ size: "lg" })}>
               Selected work
             </a>
-            <a href="#contact" className={buttonStyles({ variant: "outline", size: "lg" })}>
+            <a
+              href="#contact"
+              className={buttonStyles({ variant: "outline", size: "lg" })}
+            >
               Get in touch
             </a>
             <a
