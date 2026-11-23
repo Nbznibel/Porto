@@ -1,1 +1,0 @@
-export { useConfigForm } from './useConfigForm';
