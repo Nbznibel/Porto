@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Container, buttonStyles } from "../../../global/components/ui";
 import { portfolioData } from "../consts/profile.data";
 
@@ -29,6 +30,9 @@ export const PortfolioNav = () => (
       </nav>
 
       <div className="flex items-center gap-3">
+        <Link to="/character" className={buttonStyles({ variant: "primary", size: "sm" })}>
+          enter game
+        </Link>
         <a href="#contact" className={buttonStyles({ variant: "outline", size: "sm" })}>
           Contact
         </a>
